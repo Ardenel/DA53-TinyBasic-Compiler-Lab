@@ -25,6 +25,31 @@ options {
 
 PARSER_BEGIN(BasicParser)
 
+import fr.utbm.info.da53.lw2.symbol.SymbolTable;
+
+public class BasicParser {
+    private int basicLineNumber = 1;
+    private final SymbolTable symbolTable = new SymbolTable();
+
+    /**
+     * @return the symbol table used by the parser.
+     */
+    public SymbolTable getSymbolTable() {
+        return this.symbolTable;
+    }
+}
+
 PARSER_END(BasicParser)
 
+//Lexer
+SKIP : {
+      " "
+    | "\t"
+    | "\r"
+}
 
+TOKEN : {
+    <CR: "\n" >
+}
+
+//Parser

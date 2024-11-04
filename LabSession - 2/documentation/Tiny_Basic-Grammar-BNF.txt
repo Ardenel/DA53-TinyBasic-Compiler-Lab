@@ -1,0 +1,58 @@
+S => N
+
+N => <number> <line> N
+
+<line> => PRINT <expr>
+| IF <expr> <relop> <expr> then <line>
+| GOTO <expr>
+| INPUT <variable>
+| LET <variable> = <expr>
+| GOSUB <expr>
+| RETURN
+| END
+| REM <comment>
+
+<expr> => <term> <exprp>
+
+<exprp> => + <term> <exprp>
+| - <term> <exprp>
+| { <empty> }
+
+<term> => <factor> <termp>
+
+<termp> => * <factor> <termp>
+| / <factor> <termp>
+| { <empty> }
+
+<factor> => <variable>
+| <number>
+| ( <expr> )
+
+<relop> => =
+| <>
+| ><
+| <
+| >
+| <=
+| >=
+
+<number> => <digit> <digit>
+| <digit>
+| <digit> . <digit>
+| { <empty> }
+
+<digit> => [0-9]
+
+<variable> => <letter> <letter>
+| _ <letter>
+| <letter> <digit>
+| <letter>
+| <digit>
+| { <empty> }
+
+<letter> => [a-zA-Z]
+
+<comment> => <anychar> <comment>
+| { <empty> }
+
+<anychar> => [a-zA-Z0-9\[\]\(\)\+\-\*\=\<\>\.\,;:_\\t\\s]
