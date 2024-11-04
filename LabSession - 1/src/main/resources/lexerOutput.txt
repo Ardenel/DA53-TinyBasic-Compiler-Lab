@@ -1,0 +1,10 @@
+<NUM,5> <LET> <ID,S> <EQ> <NUM,0> <CR>
+<NUM,10> <INPUT> <ID,NUM> <CR>
+<NUM,15> <INPUT> <ID,V> <CR>
+<NUM,20> <LET> <ID,N> <EQ> <ID,NUM> <CR>
+<NUM,30> <IF> <ID,N> <LE> <NUM,0> <THEN> <GOTO> <NUM,99> <CR>
+<NUM,40> <LET> <ID,S> <EQ> <ID,S> <PLUS> <ID,V> <CR>
+<NUM,50> <LET> <ID,N> <EQ> <ID,N> <MINUS> <NUM,1> <CR>
+<NUM,70> <GOTO> <NUM,30> <CR>
+<NUM,99> <PRINT> <ID,S> <DIVIDE> <ID,NUM> <CR>
+<NUM,100> <END> 
