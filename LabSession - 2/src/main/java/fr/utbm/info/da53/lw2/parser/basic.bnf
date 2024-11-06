@@ -1,0 +1,43 @@
+code ::= lineOfCode restOfCode
+
+lineOfCode ::= <NUMBER> statement
+               | statement
+
+restOfCode ::= <CR> statement restOfCode
+                | { empty }
+
+statement ::=   <PRINT> expression
+                | <IF> expression relop expression <THEN> statement elsestatement
+                | <GOTO> expression
+                | <INPUT> variable
+                | <LET> variable <EQ> expression
+                | <GOSUB> expression
+                | <RETURN>
+                | <END>
+                | <REM> comment
+
+elsestatement ::= <ELSE> statement
+                  | { empty }
+
+relop ::= <EQ> | <NE> | <LT> | <LE> | <GT> | <GE>
+
+expression ::= term expressionp
+
+expressionp ::= <PLUS> term expressionp
+                | <MINUS> term expressionp
+                | { empty }
+
+term ::= factor termp
+
+termp ::= <MULTIPLY> factor termp
+          | <DIVIDE> factor termp
+          | { empty }
+
+factor ::= ( expression )
+            | variable
+
+variable ::= <NUMBER>
+              | <IDENTIFIER>
+              | <STRING>
+
+comment ::= <STRING>

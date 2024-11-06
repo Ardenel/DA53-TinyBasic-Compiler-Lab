@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-
+//////////Options//////////
 options {
   IGNORE_CASE = true;
   STATIC = false;
 }
 
+//////////Preamble//////////
 PARSER_BEGIN(BasicParser)
 
 import fr.utbm.info.da53.lw2.symbol.SymbolTable;
@@ -41,15 +42,181 @@ public class BasicParser {
 
 PARSER_END(BasicParser)
 
-//Lexer
+//////////Lexer//////////
+
+//////Skip white spaces
 SKIP : {
       " "
     | "\t"
     | "\r"
 }
 
+//////Cariage return
 TOKEN : {
     <CR: "\n" >
 }
 
-//Parser
+//////Relational operators
+TOKEN : {
+    <EQ: "=">
+    | <LT: "<">
+    | <LE: "<=">
+    | <GT: ">">
+    | <GE: ">=">
+    | <NE: "<>" | "><">
+}
+
+//////Arithmetic operators
+
+TOKEN : {
+    <PLUS: "+">
+    | <MINUS: "-">
+    | <MULTIPLY: "*">
+    | <DIVIDE: "/">
+}
+
+//////Parenthesis
+
+TOKEN : {
+    <OPAREN: "(">
+    | <CPAREN: ")">
+}
+
+//////String
+
+TOKEN: {
+    <STRING: "\"" (~["\"","\n","\r"])* "\"">
+}
+
+//////Number
+
+TOKEN : {
+    <NUMBER: (["0"-"9"])+("."(["0"-"9"])+)?>
+}
+
+//////Identifier
+
+TOKEN : {
+    <IDENTIFIER: ["_","a"-"z","A"-"Z"](["a"-"z","A"-"Z","0"-"9"])*>
+}
+
+//////Keywords
+
+TOKEN : {
+    <PRINT: ("P"|"p") ("R"|"r") ("I"|"i") ("N"|"n") ("T"|"t")>
+    | <IF: ("I"|"i") ("F"|"f")>
+    | <THEN: ("T"|"t") ("H"|"h") ("E"|"e") ("N"|"n")>
+    | <ELSE: ("E"|"e") ("L"|"l") ("S"|"s") ("E"|"e")>
+    | <GOTO: ("G"|"g") ("O"|"o") ("T"|"t") ("O"|"o")>
+    | <GOSUB: ("G"|"g") ("O"|"o") ("S"|"s") ("U"|"u") ("B"|"b")>
+    | <LET: ("L"|"l") ("E"|"e") ("T"|"t")>
+    | <INPUT: ("I"|"i") ("N"|"n") ("P"|"p") ("U"|"u") ("T"|"t")>
+    | <RETURN: ("R"|"r") ("E"|"e") ("T"|"t") ("U"|"u") ("R"|"r") ("N"|"n")>
+    | <END: ("E"|"e") ("N"|"n") ("D"|"d")>
+    | <REM: ("R"|"r") ("E"|"e") ("M"|"m")>
+}
+
+
+//////////Parser//////////
+
+void code() throws CompilerException:
+{}
+{
+    lineOfCode() restOfCode()
+}
+
+void lineOfCode() :
+{}
+{
+  ( <NUMBER> statement() )
+  | statement()
+}
+
+void restOfCode() :
+{}
+{
+  ( <CR> statement() restOfCode() )
+  | {}
+}
+
+void statement() :
+{}
+{
+    <PRINT> expression()
+    |<IF> expression() relop() expression() <THEN> statement() elseStatement()
+    |<GOTO> expression()
+    |<INPUT> variable()
+    |<LET> variable() <EQ> expression()
+    |<GOSUB> expression()
+    |<RETURN>
+    |<END>
+    |<REM> comment()
+}
+
+void elseStatement() :
+{}
+{
+    <ELSE> statement()
+    |{}
+}
+
+void relop():
+{}
+{
+   <EQ>
+   |<NE>
+   |<LT>
+   |<LE>
+   |<GT>
+   |<GE>
+}
+
+void expression():
+{}
+{
+    term() expressionp()
+}
+
+
+void expressionp():
+{}
+{
+    <PLUS> term() expressionp()
+    |<MINUS> term() expressionp()
+    |{}
+}
+
+void term():
+{}
+{
+    factor() termp()
+}
+
+void termp():
+{}
+{
+    <MULTIPLY> factor() termp()
+    |<DIVIDE> factor() termp()
+}
+
+void factor():
+{}
+{
+    <OPAREN> expression() <CPAREN>
+    | variable()
+}
+
+void variable():
+{}
+{
+    <NUMBER>
+    | <IDENTIFIER>
+    | <STRING>
+}
+
+void comment():
+{}
+{
+    <STRING>
+}
+
