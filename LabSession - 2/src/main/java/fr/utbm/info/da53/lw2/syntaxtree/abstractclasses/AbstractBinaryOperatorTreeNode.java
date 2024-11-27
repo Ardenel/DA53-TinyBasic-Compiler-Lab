@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.utbm.info.da53.lw2.syntaxtree;
+package fr.utbm.info.da53.lw2.syntaxtree.abstractclasses;
 
 import fr.utbm.info.da53.lw2.context.ExecutionContext;
 import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
@@ -130,7 +130,7 @@ public abstract class AbstractBinaryOperatorTreeNode extends AbstractValueTreeNo
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return "(" //$NON-NLS-1$
 				+getLeftOperand().toString()
 				+getOperatorString()

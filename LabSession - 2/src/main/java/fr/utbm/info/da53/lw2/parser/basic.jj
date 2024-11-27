@@ -1,23 +1,10 @@
 /* 
- * $Id$
- * 
- * Copyright (c) 2012-2021 Stephane GALLAND.
- * 
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Tiny Basic Grammar Definition for JavaCC
+ * Author: Arthur
+ * Version: 1.0
  */
 
-//////////Options//////////
+////////// Options //////////
 options {
   IGNORE_CASE = true;
   STATIC = false;
@@ -27,6 +14,8 @@ options {
 PARSER_BEGIN(BasicParser)
 
 import fr.utbm.info.da53.lw2.symbol.SymbolTable;
+import fr.utbm.info.da53.lw2.syntaxtree.*;
+import fr.utbm.info.da53.lw2.error.CompilerException;
 
 public class BasicParser {
     private int basicLineNumber = 1;
@@ -125,19 +114,21 @@ void code() throws CompilerException:
     lineOfCode() restOfCode()
 }
 
-void lineOfCode() :
-{}
-{
-  ( <NUMBER> statement() )
-  | statement()
-}
-
 void restOfCode() :
 {}
 {
-  ( <CR> statement() restOfCode() )
+  <CR> lineOfCode() restOfCode()
   | {}
 }
+
+
+void lineOfCode() :
+{}
+{
+  <NUMBER> statement()
+  | statement()
+}
+
 
 void statement() :
 {}
@@ -150,7 +141,7 @@ void statement() :
     |<GOSUB> expression()
     |<RETURN>
     |<END>
-    |<REM> comment()
+    |<REM> <STRING>
 }
 
 void elseStatement() :
@@ -183,7 +174,7 @@ void expressionp():
 {
     <PLUS> term() expressionp()
     |<MINUS> term() expressionp()
-    |{}
+    | {}
 }
 
 void term():
@@ -197,6 +188,7 @@ void termp():
 {
     <MULTIPLY> factor() termp()
     |<DIVIDE> factor() termp()
+    | {}
 }
 
 void factor():
@@ -211,12 +203,4 @@ void variable():
 {
     <NUMBER>
     | <IDENTIFIER>
-    | <STRING>
 }
-
-void comment():
-{}
-{
-    <STRING>
-}
-

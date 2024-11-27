@@ -16,33 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.utbm.info.da53.lw2.syntaxtree;
+package fr.utbm.info.da53.lw2.syntaxtree.abstractclasses;
 
-import fr.utbm.info.da53.lw2.context.ExecutionContext;
-import fr.utbm.info.da53.lw2.error.InterpreterException;
-import fr.utbm.info.da53.lw2.type.Value;
+import fr.utbm.info.da53.lw2.context.Statement;
 
 /**
- * This abstract class represents any node that is representing a value
- * (number of string literal).
+ * This abstract class represents any node in the syntax tree
+ * that is for a statement.
  * 
  * @author St&eacute;phane GALLAND &lt;stephane.galland@utbm.fr&gt;
  * @version $Name$ $Revision$ $Date$
  */
-public abstract class AbstractValueTreeNode extends AbstractSyntaxTreeNode {
+public abstract class AbstractStatementTreeNode extends AbstractSyntaxTreeNode implements Statement {
 	
 	/**
 	 */
-	public AbstractValueTreeNode() {
+	public AbstractStatementTreeNode() {
 		//
 	}
-	
-	/** Evaluate and replies the value.
-	 * 
-	 * @param executionContext is the current execution context.
-	 * @return the value, never <code>null</code>.
-	 * @throws InterpreterException when something bad occurs during the evaluation.
-	 */
-	public abstract Value evaluate(ExecutionContext executionContext) throws InterpreterException;
 	
 }

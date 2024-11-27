@@ -1,43 +1,40 @@
-code ::= lineOfCode restOfCode
+    code ::= lineOfCode restOfCode
 
-lineOfCode ::= <NUMBER> statement
-               | statement
+    restOfCode ::= <CR> lineOfCode restOfCode
+                    | { empty }
 
-restOfCode ::= <CR> statement restOfCode
-                | { empty }
+    lineOfCode ::= <NUMBER> statement
+                   | statement
 
-statement ::=   <PRINT> expression
-                | <IF> expression relop expression <THEN> statement elsestatement
-                | <GOTO> expression
-                | <INPUT> variable
-                | <LET> variable <EQ> expression
-                | <GOSUB> expression
-                | <RETURN>
-                | <END>
-                | <REM> comment
+    statement ::=   <PRINT> expression
+                    | <IF> expression relop expression <THEN> statement elsestatement
+                    | <GOTO> expression
+                    | <INPUT> variable
+                    | <LET> variable <EQ> expression
+                    | <GOSUB> expression
+                    | <RETURN>
+                    | <END>
+                    | <REM> <STRING>
 
-elsestatement ::= <ELSE> statement
-                  | { empty }
+    elsestatement ::= <ELSE> statement
+                      | { empty }
 
-relop ::= <EQ> | <NE> | <LT> | <LE> | <GT> | <GE>
+    relop ::= <EQ> | <NE> | <LT> | <LE> | <GT> | <GE>
 
-expression ::= term expressionp
+    expression ::= term expression_end
 
-expressionp ::= <PLUS> term expressionp
-                | <MINUS> term expressionp
-                | { empty }
+    expression_end ::= <PLUS> term expression_end
+                    | <MINUS> term expression_end
+                    | { empty }
 
-term ::= factor termp
+    term ::= factor term_end
 
-termp ::= <MULTIPLY> factor termp
-          | <DIVIDE> factor termp
-          | { empty }
+    term_end ::= <MULTIPLY> factor term_end
+              | <DIVIDE> factor term_end
+              | { empty }
 
-factor ::= ( expression )
-            | variable
+    factor ::= <OPARENT> expression <CPARENT>
+                | variable
 
-variable ::= <NUMBER>
-              | <IDENTIFIER>
-              | <STRING>
-
-comment ::= <STRING>
+    variable ::= <NUMBER>
+                  | <IDENTIFIER>

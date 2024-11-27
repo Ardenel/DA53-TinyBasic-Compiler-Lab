@@ -90,7 +90,12 @@ public enum InterpreterErrorType {
 	
 	/** A variable was not set.
 	 */
-	UNSET_VALUE;
+	UNSET_VALUE,
+
+	/** Type mismatch.
+	 */
+	TYPE_MISMATCH;
+
 
 	/** Replies the error message.
 	 * 
