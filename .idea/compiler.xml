@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="LabSession-2" />
         <module name="DA53-TP1" />
+        <module name="labsession3" />
       </profile>
     </annotationProcessing>
   </component>
