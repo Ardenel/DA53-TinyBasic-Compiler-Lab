@@ -4,6 +4,9 @@ import fr.utbm.info.da53.lw2.context.ExecutionContext;
 import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractStatementTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressInstruction;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 
 /**
  * Represents the RETURN statement in the syntax tree.
@@ -41,6 +44,20 @@ public class ReturnTreeNode extends AbstractStatementTreeNode {
         return parent;
 
     }
+
+    @Override
+    public void generate(ThreeAddressCode code) {
+        // Add a RETURN instruction to the three-address code
+        code.addRecord(new ThreeAddressRecord(
+                ThreeAddressInstruction.RETURN,
+                null, // No parameter
+                null, // No second parameter
+                null, // No result
+                null, // No label
+                "Return to the caller of the subroutine"
+        ));
+    }
+
 
     /**
      * Returns a string representation of the RETURN statement.

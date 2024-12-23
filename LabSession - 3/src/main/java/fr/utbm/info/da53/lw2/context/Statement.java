@@ -19,6 +19,8 @@
 package fr.utbm.info.da53.lw2.context;
 
 import fr.utbm.info.da53.lw2.error.InterpreterException;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 
 /**
  * Statement in TinyBasic.
@@ -35,5 +37,10 @@ public interface Statement {
 	 * @throws InterpreterException when something bar occur during the execution of the statement.
 	 */
 	public ExecutionContext run(ExecutionContext context) throws InterpreterException;
-	
+
+	/**
+	 * Generate the three address code for the statement.
+	 * @param code the three address code to generate.
+	 */
+	public void generate(ThreeAddressCode code);
 }

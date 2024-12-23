@@ -3,6 +3,9 @@ package fr.utbm.info.da53.lw2.syntaxtree.keywords;
 import fr.utbm.info.da53.lw2.context.ExecutionContext;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractStatementTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressInstruction;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 
 
 /**
@@ -36,6 +39,20 @@ public class EndTreeNode extends AbstractStatementTreeNode {
         context.getInterpreter().exit();
         return context;
     }
+
+    @Override
+    public void generate(ThreeAddressCode code) {
+        // Add an EXIT instruction to the three-address code
+        code.addRecord(new ThreeAddressRecord(
+                ThreeAddressInstruction.END,
+                null, // No parameter
+                null, // No second parameter
+                null, // No result
+                null, // No label
+                "Terminate the program execution"
+        ));
+    }
+
 
     /**
      * Returns a string representation of the END statement.

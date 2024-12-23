@@ -4,6 +4,7 @@ import fr.utbm.info.da53.lw2.context.ExecutionContext;
 import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractValueTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
 import fr.utbm.info.da53.lw2.type.Value;
 
 /**
@@ -63,6 +64,21 @@ public class IdentifierTreeNode extends AbstractValueTreeNode {
             fail(executionContext, InterpreterErrorType.UNSET_VALUE, "Undefined identifier: " + this.identifier);
         }
         return value;
+    }
+
+    @Override
+    public String generate(ThreeAddressCode code) {
+        if (this.identifier == null || this.identifier.isEmpty()) {
+            throw new IllegalStateException("Identifier is missing or not set.");
+        }
+
+        // Check if the identifier exists in the symbol table
+        if (code.getSymbolTable().get(this.identifier) == null) {
+            throw new IllegalStateException("Undefined identifier: " + this.identifier);
+        }
+
+        // Return the identifier as it directly refers to the variable
+        return this.identifier;
     }
 
 

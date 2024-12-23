@@ -3,6 +3,9 @@ package fr.utbm.info.da53.lw2.syntaxtree.variables;
 import fr.utbm.info.da53.lw2.context.ExecutionContext;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractValueTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressInstruction;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 import fr.utbm.info.da53.lw2.type.Value;
 
 /**
@@ -42,6 +45,21 @@ public class NumberTreeNode extends AbstractValueTreeNode {
     @Override
     public Value evaluate(ExecutionContext executionContext) throws InterpreterException {
         return this.number;
+    }
+
+    @Override
+    public String generate(ThreeAddressCode code) {
+        if (this.number == null) {
+            throw new IllegalStateException("Identifier is missing or not set.");
+        }
+
+        // Check if the number exists in the symbol table
+        if (code.getSymbolTable().get(this.number.toString()) == null) {
+            throw new IllegalStateException("Undefined identifier: " + this.number);
+        }
+
+        // Return the number as it directly refers to the variable
+        return this.number.toString();
     }
 
     /**

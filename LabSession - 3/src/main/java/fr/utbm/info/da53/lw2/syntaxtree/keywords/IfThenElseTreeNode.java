@@ -5,6 +5,9 @@ import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractStatementTreeNode;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractValueTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressInstruction;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 import fr.utbm.info.da53.lw2.type.Value;
 import fr.utbm.info.da53.lw2.type.VariableType;
 
@@ -16,7 +19,7 @@ import fr.utbm.info.da53.lw2.type.VariableType;
  *
  * @author Arthur
  */
-public class IfThenTreeNode extends AbstractStatementTreeNode {
+public class IfThenElseTreeNode extends AbstractStatementTreeNode {
 
     private AbstractValueTreeNode condition;
     private AbstractStatementTreeNode thenStatement;
@@ -28,16 +31,30 @@ public class IfThenTreeNode extends AbstractStatementTreeNode {
      * @param condition     the condition to evaluate.
      * @param thenStatement the statement to execute if the condition is true.
      */
-    public IfThenTreeNode(AbstractValueTreeNode condition, AbstractStatementTreeNode thenStatement) {
+    public IfThenElseTreeNode(AbstractValueTreeNode condition, AbstractStatementTreeNode thenStatement) {
         this.condition = condition;
         this.thenStatement = thenStatement;
+    }
+
+
+    /**
+     * Constructs an `IF-THEN-ELSE` statement node with the specified condition, then-statement and else-statement.
+     *
+     * @param condition     the condition to evaluate.
+     * @param thenStatement the statement to execute if the condition is true.
+     * @param elseStatement the statement to execute if the condition is false.
+     */
+    public IfThenElseTreeNode(AbstractValueTreeNode condition, AbstractStatementTreeNode thenStatement, AbstractStatementTreeNode elseStatement) {
+        this.condition = condition;
+        this.thenStatement = thenStatement;
+        this.elseStatement = elseStatement;
     }
 
     /**
      * Default constructor for creating an empty `IF-THEN` statement node.
      * Components should be set later using their respective setters.
      */
-    public IfThenTreeNode() {
+    public IfThenElseTreeNode() {
         super();
     }
 
@@ -124,6 +141,85 @@ public class IfThenTreeNode extends AbstractStatementTreeNode {
 
         return executionContext;
     }
+
+    @Override
+    public void generate(ThreeAddressCode code){
+        // Generate code for the condition and get the resulting variable
+        String conditionResult = this.condition.generate(code);
+
+        // Generate labels
+        String thenLabel = code.createLabel();
+        String endLabel = code.createLabel();
+        String elseLabel = (this.elseStatement != null) ? code.createLabel() : null;
+
+        // Add conditional jump based on the condition
+        if (elseLabel != null) {
+            code.addRecord(new ThreeAddressRecord(
+                    ThreeAddressInstruction.IFFALSE,
+                    conditionResult,
+                    null, // No second parameter
+                    null, // No result
+                    elseLabel, // Jump to ELSE if condition is false
+                    "Jump to ELSE block if condition is false"
+            ));
+        } else {
+            code.addRecord(new ThreeAddressRecord(
+                    ThreeAddressInstruction.IFFALSE,
+                    conditionResult,
+                    null, // No second parameter
+                    null, // No result
+                    endLabel, // Jump to END if condition is false
+                    "Jump to END block if condition is false"
+            ));
+        }
+
+        // Generate code for THEN block
+        code.addRecord(new ThreeAddressRecord(
+                ThreeAddressInstruction.LABEL,
+                thenLabel,
+                null, // No second parameter
+                null, // No result
+                null, // No label
+                "Start of THEN block"
+        ));
+        this.thenStatement.generate(code);
+
+        // Add a jump to the end label if ELSE exists
+        if (elseLabel != null) {
+            code.addRecord(new ThreeAddressRecord(
+                    ThreeAddressInstruction.GOTO,
+                    null, // No parameter
+                    null, // No second parameter
+                    null, // No result
+                    endLabel, // Jump to END
+                    "Skip ELSE block"
+            ));
+        }
+
+        // Generate code for ELSE block if it exists
+        if (this.elseStatement != null) {
+            code.addRecord(new ThreeAddressRecord(
+                    ThreeAddressInstruction.LABEL,
+                    elseLabel,
+                    null, // No second parameter
+                    null, // No result
+                    null, // No label
+                    "Start of ELSE block"
+            ));
+            this.elseStatement.generate(code);
+        }
+
+        // Add the end label
+        code.addRecord(new ThreeAddressRecord(
+                ThreeAddressInstruction.LABEL,
+                endLabel,
+                null, // No second parameter
+                null, // No result
+                null, // No label
+                "End of IF-THEN-ELSE block"
+        ));
+    }
+
 
     /**
      * Returns a string representation of this node, including the `IF`, `THEN`,

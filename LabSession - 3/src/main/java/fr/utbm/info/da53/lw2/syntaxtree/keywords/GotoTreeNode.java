@@ -1,10 +1,15 @@
 package fr.utbm.info.da53.lw2.syntaxtree.keywords;
 
 import fr.utbm.info.da53.lw2.context.ExecutionContext;
+import fr.utbm.info.da53.lw2.error.CompilationErrorType;
+import fr.utbm.info.da53.lw2.error.CompilerException;
 import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractStatementTreeNode;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractValueTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressInstruction;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 
 /**
  * Represents a `GOTO` statement in the syntax tree.
@@ -72,6 +77,27 @@ public class GotoTreeNode extends AbstractStatementTreeNode {
 
         return executionContext;
     }
+
+    @Override
+    public void generate(ThreeAddressCode code) {
+        if (this.expression == null) {
+            throw new IllegalStateException("GOTO expression is missing.");
+        }
+
+        // Generate code for the expression and get the resulting variable
+        String targetLineNumber = this.expression.generate(code);
+
+        // Add a GOTO instruction with the line number
+        code.addRecord(new ThreeAddressRecord(
+                ThreeAddressInstruction.GOTO,
+                targetLineNumber, // The Tiny Basic line number to jump to
+                null, // No second parameter
+                null, // No result
+                null, // Label or mapping not resolved yet
+                "Dynamic jump to Tiny Basic line " + targetLineNumber
+        ));
+    }
+
 
     /**
      * Returns a string representation of the `GOTO` statement node.

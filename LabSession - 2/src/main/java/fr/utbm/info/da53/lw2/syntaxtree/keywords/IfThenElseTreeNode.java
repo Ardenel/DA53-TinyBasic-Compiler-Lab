@@ -16,7 +16,7 @@ import fr.utbm.info.da53.lw2.type.VariableType;
  *
  * @author Arthur
  */
-public class IfThenTreeNode extends AbstractStatementTreeNode {
+public class IfThenElseTreeNode extends AbstractStatementTreeNode {
 
     private AbstractValueTreeNode condition;
     private AbstractStatementTreeNode thenStatement;
@@ -28,7 +28,7 @@ public class IfThenTreeNode extends AbstractStatementTreeNode {
      * @param condition     the condition to evaluate.
      * @param thenStatement the statement to execute if the condition is true.
      */
-    public IfThenTreeNode(AbstractValueTreeNode condition, AbstractStatementTreeNode thenStatement) {
+    public IfThenElseTreeNode(AbstractValueTreeNode condition, AbstractStatementTreeNode thenStatement) {
         this.condition = condition;
         this.thenStatement = thenStatement;
     }
@@ -37,7 +37,7 @@ public class IfThenTreeNode extends AbstractStatementTreeNode {
      * Default constructor for creating an empty `IF-THEN` statement node.
      * Components should be set later using their respective setters.
      */
-    public IfThenTreeNode() {
+    public IfThenElseTreeNode() {
         super();
     }
 

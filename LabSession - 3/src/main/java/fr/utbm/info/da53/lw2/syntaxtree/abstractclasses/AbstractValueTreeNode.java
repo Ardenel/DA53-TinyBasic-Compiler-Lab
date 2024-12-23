@@ -20,6 +20,8 @@ package fr.utbm.info.da53.lw2.syntaxtree.abstractclasses;
 
 import fr.utbm.info.da53.lw2.context.ExecutionContext;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 import fr.utbm.info.da53.lw2.type.Value;
 
 /**
@@ -44,5 +46,11 @@ public abstract class AbstractValueTreeNode extends AbstractSyntaxTreeNode {
 	 * @throws InterpreterException when something bad occurs during the evaluation.
 	 */
 	public abstract Value evaluate(ExecutionContext executionContext) throws InterpreterException;
-	
+
+
+	/**
+	 * Generate the three address code for the statement.
+	 * @param code the three address code to generate.
+	 */
+	public abstract String generate (ThreeAddressCode code);
 }

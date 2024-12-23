@@ -173,7 +173,7 @@ AbstractStatementTreeNode statement() throws CompilerException:
 {
     AbstractValueTreeNode expr, rightExpr, var;
     AbstractStatementTreeNode stmt, thenStmt, elseStmt;
-    IfThenTreeNode ifNode;
+    IfThenElseTreeNode ifNode;
     Token str;
 }
 {
@@ -182,13 +182,13 @@ AbstractStatementTreeNode statement() throws CompilerException:
     else {return new PrintTreeNode(expr);}
     }
 
-    |<IF> expr = expression() relop() rightExpr = expression() <THEN> thenStmt = statement() elseStmt = elseStatement()
+    |<IF> expr = expression() relop() rightExpr = expression() <THEN> thenStmt = statement()
     {if (expr == null) throw new CompilerException(CompilationErrorType.EXPECTING_RIGHT_OPERAND, this.basicLineNumber, "Expecting a left operand");
     else {if (rightExpr == null) throw new CompilerException(CompilationErrorType.EXPECTING_RIGHT_OPERAND, this.basicLineNumber, "Expecting a right operand");
-        else {ifNode = new IfThenTreeNode(expr, thenStmt);}}
-    if (elseStmt != null) {ifNode.setElseStatement(elseStmt);}
-    return ifNode;
+    else {ifNode = new IfThenElseTreeNode(expr, thenStmt);}}
     }
+    elseStmt = elseStatement(ifNode)
+    {return ifNode;}
 
     |<GOTO> expr = expression()
     {if (expr == null) throw new CompilerException(CompilationErrorType.EXPECTING_EXPRESSION, this.basicLineNumber, "Expecting an expression");
@@ -218,15 +218,16 @@ AbstractStatementTreeNode statement() throws CompilerException:
 
 }
 
-AbstractStatementTreeNode  elseStatement() throws CompilerException :
+AbstractStatementTreeNode elseStatement(IfThenElseTreeNode ifNode) throws CompilerException :
 {
     AbstractStatementTreeNode stmt;
 }
 {
     <ELSE> stmt = statement()
     {if (stmt == null) throw new CompilerException(CompilationErrorType.NO_VALID_STATEMENT, this.basicLineNumber, "No valid statement");
-    else {return new ElseTreeNode(stmt);}
-    }
+else {if (ifNode != null) ifNode.setElseStatement(stmt);}
+    return ifNode;
+}
 
     | {return null;}
 }

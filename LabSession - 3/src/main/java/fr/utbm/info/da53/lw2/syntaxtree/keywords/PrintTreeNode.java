@@ -5,6 +5,9 @@ import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractStatementTreeNode;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractValueTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressInstruction;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 import fr.utbm.info.da53.lw2.type.Value;
 
 
@@ -78,6 +81,34 @@ public class PrintTreeNode extends AbstractStatementTreeNode {
         }
 
         return executionContext;
+    }
+
+    @Override
+    public void generate(ThreeAddressCode code) {
+        if (this.expression == null) {
+            // If no expression, print an empty line
+            code.addRecord(new ThreeAddressRecord(
+                    ThreeAddressInstruction.PRINT,
+                    null, // No parameter
+                    null, // No second parameter
+                    null, // No result
+                    null, // No label
+                    "Print an empty line"
+            ));
+        } else {
+            // Generate the code for the expression
+            String result = this.expression.generate(code);
+
+            // Add a PRINT instruction for the result
+            code.addRecord(new ThreeAddressRecord(
+                    ThreeAddressInstruction.PRINT,
+                    result, // The value to print
+                    null, // No second parameter
+                    null, // No result
+                    null, // No label
+                    "Print the result of the expression"
+            ));
+        }
     }
 
     /**

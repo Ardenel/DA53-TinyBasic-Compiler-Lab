@@ -5,6 +5,7 @@ import fr.utbm.info.da53.lw2.context.ExecutionContext;
 import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractStatementTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
 import fr.utbm.info.da53.lw2.type.Value;
 
 /** Represents the INPUT statement in the syntax tree.
@@ -23,5 +24,10 @@ public class InputTreeNode extends AbstractStatementTreeNode {
     @Override
     public ExecutionContext run(ExecutionContext context) throws InterpreterException {
         return null;
+    }
+
+    @Override
+    public void generate(ThreeAddressCode code) {
+
     }
 }

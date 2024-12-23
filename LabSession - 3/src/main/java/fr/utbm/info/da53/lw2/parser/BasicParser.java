@@ -90,7 +90,7 @@ public class BasicParser implements BasicParserConstants {
   final public AbstractStatementTreeNode statement() throws ParseException, CompilerException {
     AbstractValueTreeNode expr, rightExpr, var;
     AbstractStatementTreeNode stmt, thenStmt, elseStmt;
-    IfThenTreeNode ifNode;
+    IfThenElseTreeNode ifNode;
     Token str;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PRINT:
@@ -106,12 +106,11 @@ public class BasicParser implements BasicParserConstants {
       rightExpr = expression();
       jj_consume_token(THEN);
       thenStmt = statement();
-      elseStmt = elseStatement();
      if (expr == null) {if (true) throw new CompilerException(CompilationErrorType.EXPECTING_RIGHT_OPERAND, this.basicLineNumber, "Expecting a left operand");}
     else {if (rightExpr == null) {if (true) throw new CompilerException(CompilationErrorType.EXPECTING_RIGHT_OPERAND, this.basicLineNumber, "Expecting a right operand");}
-        else {ifNode = new IfThenTreeNode(expr, thenStmt);}}
-    if (elseStmt != null) {ifNode.setElseStatement(elseStmt);}
-    {if (true) return ifNode;}
+    else {ifNode = new IfThenElseTreeNode(expr, thenStmt);}}
+      elseStmt = elseStatement(ifNode);
+     {if (true) return ifNode;}
       break;
     case GOTO:
       jj_consume_token(GOTO);
@@ -156,14 +155,15 @@ public class BasicParser implements BasicParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public AbstractStatementTreeNode elseStatement() throws ParseException, CompilerException {
+  final public AbstractStatementTreeNode elseStatement(IfThenElseTreeNode ifNode) throws ParseException, CompilerException {
     AbstractStatementTreeNode stmt;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ELSE:
       jj_consume_token(ELSE);
       stmt = statement();
      if (stmt == null) {if (true) throw new CompilerException(CompilationErrorType.NO_VALID_STATEMENT, this.basicLineNumber, "No valid statement");}
-    else {{if (true) return new ElseTreeNode(stmt);}}
+else {if (ifNode != null) ifNode.setElseStatement(stmt);}
+    {if (true) return ifNode;}
       break;
     default:
       jj_la1[3] = jj_gen;

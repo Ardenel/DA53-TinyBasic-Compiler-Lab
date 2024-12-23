@@ -5,6 +5,9 @@ import fr.utbm.info.da53.lw2.error.InterpreterErrorType;
 import fr.utbm.info.da53.lw2.error.InterpreterException;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractBinaryOperatorTreeNode;
 import fr.utbm.info.da53.lw2.syntaxtree.abstractclasses.AbstractValueTreeNode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressCode;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressInstruction;
+import fr.utbm.info.da53.lw2.threeaddresscode.ThreeAddressRecord;
 import fr.utbm.info.da53.lw2.type.Value;
 import fr.utbm.info.da53.lw2.type.VariableType;
 
@@ -54,6 +57,32 @@ public class MultiplyTreeNode extends AbstractBinaryOperatorTreeNode {
         Number result = left.getValue(Number.class).doubleValue() * right.getValue(Number.class).doubleValue();
         return new Value(result);
     }
+
+    @Override
+    public String generate(ThreeAddressCode code) {
+        // Generate code for the left operand and get the resulting temporary variable
+        String leftResult = getLeftOperand().generate(code);
+
+        // Generate code for the right operand and get the resulting temporary variable
+        String rightResult = getRightOperand().generate(code);
+
+        // Create a temporary variable for the result of the addition
+        String result = code.createTempVariable();
+
+        // Add an MULTIPLICATION instruction to the three-address code
+        code.addRecord(new ThreeAddressRecord(
+                ThreeAddressInstruction.MULTIPLICATION,
+                leftResult,   // Left operand
+                rightResult,  // Right operand
+                result,       // Result variable
+                null,         // No label
+                "Compute the multiplication of " + leftResult + " and " + rightResult
+        ));
+
+        // Return the result variable
+        return result;
+    }
+
 
     /**
      * Returns the operator string for multiplication ("*").
